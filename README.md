@@ -13,20 +13,20 @@ Installing
 First and foremost, you'll need at least Ruby 1.9.2 due to Nokogiri. After that,
 you should install both nokogiri and mustache:
 
-  gem install nokogiri mustache
+    gem install nokogiri mustache
 
 You might also have to change permissions to make the script executable:
 
-  chmod +x bgg-new-to-you.rb
+    chmod +x bgg-new-to-you.rb
 
 Using
 -----
 
 Once everything's loaded, run the script like so:
 
-  ./bgg-new-to-you.rb --username <your_username>
+    ./bgg-new-to-you.rb --username <your_username>
 
 By default the script will retrieve plays for the past month, if you need to
 pick a different month or year you can:
 
-  ./bgg-new-to-you.rb --username <your_username> --month 7 --year 2012
+    ./bgg-new-to-you.rb --username <your_username> --month 7 --year 2012
