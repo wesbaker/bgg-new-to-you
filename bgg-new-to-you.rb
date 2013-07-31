@@ -23,8 +23,7 @@ class NewToYou
     @options[:start_date] = last_month.to_s
     @options[:end_date] = ((last_month >> 1) - 1).to_s
 
-    _plays = retrieve_plays
-    print_plays(_plays)
+    print_plays(retrieve_plays)
   end
 
   # Parse out command line options
