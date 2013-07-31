@@ -34,7 +34,7 @@ class NewToYou
     Usage: bgg-new-to-you.rb --username wesbaker --month 6"
 
       opts.on('-u username', '--username username', "Username") do |username|
-        @options[:username] = username
+        @options[:username] = username.to_s
       end
 
       opts.on('-m MONTH', '--month MONTH', "Month (numeric, e.g. 5 or 12)") do |month|
@@ -49,7 +49,7 @@ class NewToYou
 
   def retrieve_plays
     # Retrieve games played in month
-    plays = Nokogiri::XML(open("#{@options[:bgg_api_url]}/plays?username=#{@options[:username]}&mindate=#{@options[:start_date]}&maxdate=#{@options[:end_date]}").read)
+    plays = Nokogiri::XML(open("#{@options[:bgg_api_url]}/plays?username=#{@options[:username]}&mindate=#{@options[:start_date]}&maxdate=#{@options[:end_date]}&subtype=boardgame").read)
 
     _games = Hash.new
 
@@ -84,6 +84,7 @@ class NewToYou
       end
 
       game_info = collection.css("item[objectid='#{objectid}']")
+      next if game_info.empty?
       _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i
 
       total_plays = game_info.css('numplays').first.text.to_i
