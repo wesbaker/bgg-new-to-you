@@ -20,7 +20,8 @@ class NewToYou
 
     # Establish previous start and end dates
     last_month = Date.new(@options[:year], @options[:month])
-    @options[:start_date] = last_month.to_s
+    @options[:start_date] = (last_month - 1).to_s
+	# last_month >> 1 gets the same time as above + 1 month, - 1 subtracts a day
     @options[:end_date] = ((last_month >> 1) - 1).to_s
 
     print_plays(retrieve_plays)
