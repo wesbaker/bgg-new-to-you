@@ -10,21 +10,31 @@ class NewToYou
   def initialize
     last_month = Date.today << 1
     @options = {
-      :bgg_api_url  => "http://boardgamegeek.com/xmlapi2",
       :username     => 'wesbaker',
       :month        => last_month.month,
-      :year         => last_month.year
+      :year         => last_month.year,
+      :yearago      => false
     }
 
     parse_options
 
+    if @options[:yearago]
+      # p @options[:year] - 1
+      # old_plays = retrieve_plays(
+      #   Date.new(@options[:year] - 1, @options[:month]),
+      #   (Date.new(@options[:year] - 1, @options[:month]) >> 1) - 1
+      # )
+      # p old_plays
+    end
+
     # Establish previous start and end dates
     last_month = Date.new(@options[:year], @options[:month])
     @options[:start_date] = (last_month - 1).to_s
-	# last_month >> 1 gets the same time as above + 1 month, - 1 subtracts a day
+
+    # last_month >> 1 gets the same time as above + 1 month, - 1 subtracts a day
     @options[:end_date] = ((last_month >> 1) - 1).to_s
 
-    print_plays(retrieve_plays)
+    print_plays(retrieve_plays())
   end
 
   # Parse out command line options
@@ -44,12 +54,21 @@ class NewToYou
       opts.on('-y YEAR', '--year YEAR', 'Year (four digits, e.g. 2013)') do |year|
         @options[:year] = year.to_i
       end
+
+      opts.on('-o', '--year-ago', 'New to You a year ago') do |yearago|
+        @options[:yearago] = true
+      end
     end.parse!
   end
 
-  def retrieve_plays
+  def retrieve_plays(start_date = @options[:start_date], end_date = @options[:end_date], username = @options[:username])
     # Retrieve games played in month
-    plays = Nokogiri::XML(open("#{@options[:bgg_api_url]}/plays?username=#{@options[:username]}&mindate=#{@options[:start_date]}&maxdate=#{@options[:end_date]}&subtype=boardgame").read)
+    plays = BGG_API.new('plays', {
+      :username => username,
+      :mindate  => start_date,
+      :maxdate  => end_date,
+      :subtype  => 'boardgame'
+    }).retrieve
 
     _games = Hash.new
 
@@ -72,11 +91,19 @@ class NewToYou
     end
 
     # Now, figure out what my current ratings and plays for that game is
-    collection = Nokogiri::XML(open("#{@options[:bgg_api_url]}/collection?username=#{@options[:username]}&played=1&stats=1").read)
+    collection = BGG_API.new('collection', {
+      :username => username,
+      :played   => 1,
+      :stats    => 1
+    }).retrieve
 
     _games.each do |objectid, data|
       # Filter out games I've played before (before mindate)
-      previous_plays = Nokogiri::XML(open("#{@options[:bgg_api_url]}/plays?username=#{@options[:username]}&maxdate=#{@options[:start_date]}&id=#{objectid}").read)
+      previous_plays = BGG_API.new('plays', {
+        :username => username,
+        :maxdate  => start_date,
+        :id       => objectid
+      }).retrieve
 
       if previous_plays.css('plays').first['total'].to_i > 0
         _games.delete(objectid)
@@ -113,6 +140,31 @@ class NewToYou
 
   public :initialize
   private :parse_options, :retrieve_plays, :print_plays, :play_count
+end
+
+# BGG API class that pulls in data and takes a hash as a set of options for the
+# query string
+class BGG_API
+  @@bgg_api_url = "http://boardgamegeek.com/xmlapi2"
+
+  def initialize(type, options)
+    @type = type
+    @options = options
+  end
+
+  def set_options(options)
+    @options = @options.merge(options)
+  end
+
+  def retrieve
+    query = "#{@@bgg_api_url}/#{@type}?"
+
+    @options.each do |name, value|
+      query << "#{name}=#{value}&"
+    end
+
+    Nokogiri::XML(open(query).read)
+  end
 end
 
 NewToYou.new
