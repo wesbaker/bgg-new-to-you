@@ -90,13 +90,6 @@ class NewToYou
       _games[objectid][:plays] = _games[objectid][:plays] + quantity.to_i
     end
 
-    # Now, figure out what my current ratings and plays for that game is
-    collection = BGG_API.new('collection', {
-      :username => username,
-      :played   => 1,
-      :stats    => 1
-    }).retrieve
-
     _games.each do |objectid, data|
       # Filter out games I've played before (before mindate)
       previous_plays = BGG_API.new('plays', {
@@ -110,8 +103,13 @@ class NewToYou
         next
       end
 
-      game_info = collection.css("item[objectid='#{objectid}']")
-      next if game_info.empty?
+      # Now, figure out what my current ratings and plays for that game is
+      game_info = BGG_API.new('collection', {
+        :username => username,
+        :id       => objectid,
+        :stats    => 1
+      }).retrieve
+
       _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i
 
       total_plays = game_info.css('numplays').first.text.to_i
