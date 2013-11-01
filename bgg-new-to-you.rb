@@ -110,6 +110,17 @@ class NewToYou
         :stats    => 1
       }).retrieve
 
+      # Error out
+      if not game_info.at_css('rating')
+        game_info = BGG_API.new('thing', {
+          :id       => objectid
+        }).retrieve
+        name = game_info.css('name').first['value']
+        puts "#{name} not rated. Please rate the game and run this script again:"
+        puts "\thttp://boardgamegeek.com/collection/user/#{username}?played=1&rated=0&ff=1"
+        exit 0
+      end
+
       _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i
 
       total_plays = game_info.css('numplays').first.text.to_i
