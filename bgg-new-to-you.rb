@@ -5,6 +5,17 @@
 #   find examples of this
 # - Provide a way to do the year ago posts, duplicating code at first is fine
 # - Refactor so both calls use the same code
+# - Color code the ratings using BGG's colors
+#   - 10/10 #00cc00
+#   - 9/10  #33cc99
+#   - 8/10  #66ff99
+#   - 7/10  #99ffff
+#   - 6/10  #9999ff
+#   - 5/10  #cc99ff
+#   - 4/10  #ff66cc
+#   - 3/10  #ff6699
+#   - 2/10  #ff3366
+#   - 1/10  #ff0000
 
 require 'date'
 require 'optparse'
