@@ -13,19 +13,9 @@ class NewToYou
       :username     => 'wesbaker',
       :month        => last_month.month,
       :year         => last_month.year,
-      :yearago      => false
     }
 
     parse_options
-
-    if @options[:yearago]
-      # p @options[:year] - 1
-      # old_plays = retrieve_plays(
-      #   Date.new(@options[:year] - 1, @options[:month]),
-      #   (Date.new(@options[:year] - 1, @options[:month]) >> 1) - 1
-      # )
-      # p old_plays
-    end
 
     # Establish previous start and end dates
     last_month = Date.new(@options[:year], @options[:month])
@@ -53,10 +43,6 @@ class NewToYou
 
       opts.on('-y YEAR', '--year YEAR', 'Year (four digits, e.g. 2013)') do |year|
         @options[:year] = year.to_i
-      end
-
-      opts.on('-o', '--year-ago', 'New to You a year ago') do |yearago|
-        @options[:yearago] = true
       end
     end.parse!
   end
