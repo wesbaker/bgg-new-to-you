@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
 
+# Plans
+# - Break up things into individual files and use the /lib directory? Try to
+#   find examples of this
+# - Provide a way to do the year ago posts, duplicating code at first is fine
+# - Refactor so both calls use the same code
+
 require 'date'
 require 'optparse'
 require 'open-uri'
