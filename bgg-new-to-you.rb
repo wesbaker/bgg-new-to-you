@@ -125,6 +125,7 @@ class NewToYou
       end
 
       _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i
+      _games[objectid][:comment] = game_info.css('comment').text
 
       total_plays = game_info.css('numplays').first.text.to_i
       _games[objectid][:plays_since] = total_plays - _games[objectid][:plays]
