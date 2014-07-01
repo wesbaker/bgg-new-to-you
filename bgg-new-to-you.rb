@@ -119,12 +119,11 @@ class NewToYou
           :id       => objectid
         }).retrieve
         name = game_info.css('name').first['value']
-        puts "#{name} not rated. Please rate the game and run this script again:"
+        puts "#{name} not rated. Rate the game and run this script again:"
         puts "\thttp://boardgamegeek.com/collection/user/#{username}?played=1&rated=0&ff=1"
-        exit 0
       end
 
-      _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i
+      _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i or 0
       _games[objectid][:comment] = game_info.css('comment').text
 
       total_plays = game_info.css('numplays').first.text.to_i
