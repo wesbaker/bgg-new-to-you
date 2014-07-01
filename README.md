@@ -11,9 +11,9 @@ Installing
 ----------
 
 First and foremost, you'll need at least Ruby 1.9.2 due to Nokogiri. After that,
-you should install both nokogiri and mustache:
+you should use [bundler](http://bundler.io) to install the required gems:
 
-    gem install nokogiri mustache
+    bundle install
 
 You might also have to change permissions to make the script executable:
 
