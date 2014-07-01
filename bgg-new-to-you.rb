@@ -123,11 +123,18 @@ class NewToYou
         puts "\thttp://boardgamegeek.com/collection/user/#{username}?played=1&rated=0&ff=1"
       end
 
-      _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i or 0
-      _games[objectid][:comment] = game_info.css('comment').text
+      if game_info.at_css('rating').is_a? Nokogiri::XML::Element
+        _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i
+        _games[objectid][:comment] = game_info.css('comment').text
 
-      total_plays = game_info.css('numplays').first.text.to_i
-      _games[objectid][:plays_since] = total_plays - _games[objectid][:plays]
+        #Figure out plays since
+        total_plays = game_info.css('numplays').first.text.to_i
+        _games[objectid][:plays_since] = total_plays - _games[objectid][:plays]
+      else
+        _games[objectid][:rating] = 0
+        _games[objectid][:comment] = ''
+        _games[objectid][:plays_since] = 0
+      end
     end
 
     # Sort games by rating
@@ -175,10 +182,15 @@ class BGG_API
       query << "#{name}=#{value}&"
     end
 
-    # Assigning the result first because calling it as an argument to the
-    # Nokogiri::XML constructor was causing issues.
-    result = open(query).read
-    Nokogiri::XML(result)
+    # Make sure we're receving a 200 result, otherwise wait and try again
+    request = open(query)
+    while (request.status[0] != "200")
+      p request.status[0]
+      sleep 2
+      request = open(query)
+    end
+
+    Nokogiri::XML(request.read)
   end
 end
 
