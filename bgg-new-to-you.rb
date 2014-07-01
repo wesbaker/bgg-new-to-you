@@ -176,7 +176,10 @@ class BGG_API
       query << "#{name}=#{value}&"
     end
 
-    Nokogiri::XML(open(query).read)
+    # Assigning the result first because calling it as an argument to the
+    # Nokogiri::XML constructor was causing issues.
+    result = open(query).read
+    Nokogiri::XML(result)
   end
 end
 
