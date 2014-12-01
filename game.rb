@@ -2,7 +2,7 @@ require 'mustache'
 
 class Game < Mustache
   self.template_path = File.dirname(__FILE__)
-  
+
   def name
     "Game"
   end
@@ -25,5 +25,9 @@ class Game < Mustache
 
   def stars
     ''
+  end
+
+  def imageid
+    0
   end
 end

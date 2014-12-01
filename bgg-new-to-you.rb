@@ -126,6 +126,7 @@ class NewToYou
       if game_info.at_css('rating').is_a? Nokogiri::XML::Element
         _games[objectid][:rating] = game_info.css('rating').attr('value').content.to_i
         _games[objectid][:comment] = game_info.css('comment').text
+        _games[objectid][:imageid] = game_info.css('image').text.match(/\d+/)[0].to_i
 
         #Figure out plays since
         total_plays = game_info.css('numplays').first.text.to_i
