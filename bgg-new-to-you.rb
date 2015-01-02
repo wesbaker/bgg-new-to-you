@@ -165,7 +165,7 @@ end
 # BGG API class that pulls in data and takes a hash as a set of options for the
 # query string
 class BGG_API
-  @@bgg_api_url = "http://boardgamegeek.com/xmlapi2"
+  @@bgg_api_url = "https://boardgamegeek.com/xmlapi2"
 
   def initialize(type, options)
     @type = type
@@ -182,6 +182,9 @@ class BGG_API
     @options.each do |name, value|
       query << "#{name}=#{value}&"
     end
+
+    # Remove the last ampersand
+    query = query[0..-2]
 
     # Make sure we're receving a 200 result, otherwise wait and try again
     request = open(query)
