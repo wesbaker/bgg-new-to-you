@@ -1,6 +1,6 @@
 # A sample Gemfile
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-# gem "rails"
-gem "nokogiri"
-gem "mustache"
+# gem 'rails'
+gem 'nokogiri'
+gem 'mustache'

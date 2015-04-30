@@ -4,7 +4,7 @@ class Game < Mustache
   self.template_path = File.dirname(__FILE__)
 
   def name
-    "Game"
+    'Game'
   end
 
   def plays
@@ -20,7 +20,7 @@ class Game < Mustache
   end
 
   def play_count
-  '1 play'
+    '1 play'
   end
 
   def stars
