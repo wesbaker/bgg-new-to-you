@@ -5,17 +5,6 @@
 #   find examples of this
 # - Provide a way to do the year ago posts, duplicating code at first is fine
 # - Refactor so both calls use the same code
-# - Color code the ratings using BGG's colors
-#   - 10/10 #00cc00
-#   - 9/10  #33cc99
-#   - 8/10  #66ff99
-#   - 7/10  #99ffff
-#   - 6/10  #9999ff
-#   - 5/10  #cc99ff
-#   - 4/10  #ff66cc
-#   - 3/10  #ff6699
-#   - 2/10  #ff3366
-#   - 1/10  #ff0000
 
 require 'date'
 require 'optparse'
@@ -150,9 +139,31 @@ class NewToYou
     games.sort_by { |_objectid, data| data[:rating] * -1 }
   end
 
+
+  # Return the color associated with the rating
+  #
+  # @param [Integer] rating Rating number, 1-10
+  # @return [string] Hex color for rating
+  def get_color(rating)
+    colors = {
+      10 => '#00cc00',
+      9  => '#33cc99',
+      8  => '#66ff99',
+      7  => '#99ffff',
+      6  => '#9999ff',
+      5  => '#cc99ff',
+      4  => '#ff66cc',
+      3  => '#ff6699',
+      2  => '#ff3366',
+      1  => '#ff0000',
+    }
+    return colors[rating]
+  end
+
   def print_plays(games)
     # Spit out something coherent
     games.each do |_objectid, data|
+      data[:bgcolor] = get_color(data[:rating])
       data[:stars] = ':star:' * data[:rating]
       data[:stars] += ':nostar:' * (10 - data[:rating])
       data[:play_count] = play_count(data[:plays], data[:plays_since])
